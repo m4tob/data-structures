@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estrutura de Dados - Fila</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+  <style>
+    .list-group-item {
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .list-group-horizontal {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+    }
+
+    .list-group-item.last-element {
+      background-color: orangered;
+      color: #fff;
+    }
+
+    .list-group-item.first-element {
+      background-color: #007bff !important;
+      color: #fff;
+    }
+
+    p {
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <!-- <h1 class="text-center mt-5">Estrutura de Dados - Fila</h1> -->
+    <div class="row mt-5">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="element">Novo Elemento: </label>
+          <input type="text" class="form-control" id="element" placeholder="3, 8, 2, 10">
+        </div>
+        <div class="d-flex flex-wrap justify-content-center">
+          <button class="btn btn-primary mt-1 mx-1" id="add">Inserir</button>
+          <button class="btn btn-warning mt-1 mx-1" id="remove">Remover</button>
+          <button class="btn btn-danger mt-1 mx-1" id="clear">Limpar</button>
+        </div>
+      </div>
+
+      <div class="col-md-6 mt-5 mt-md-0">
+        <h3 id="count" class="text-center">Fila</h3>
+        <div>
+          <p>Tamanho: <b><span id="size"></span></b></p>
+          <p>Fila está vazia?: <b><span id="empty"></span></b></p>
+          <p>Primeiro Elemento: <b><span id="first"></span></b></p>
+          <p>Último Elemento: <b><span id="last"></span></b></p>
+        </div>
+        <ul id="queue" class="mt-4 list-group list-group-horizontal" style="overflow-x: auto;"></ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const queue = {
+      first: null,
+      last: null,
+      size: 0,
+
+      add: function (element) {
+        if (!element || element.trim() === '') return;
+
+        const node = {
+          element: element.trim(),
+          next: null,
+          previous: null
+        };
+
+        if (!this.first) {
+          this.first = node;
+        } else {
+          node.previous = this.last;
+          this.last.next = node;
+        }
+
+        this.last = node;
+        this.size++;
+      },
+
+      remove: function () {
+        if (this.size === 0) return null;
+
+        const element = this.first.element;
+        this.first = this.first.next;
+        if (this.first) {
+          this.first.previous = null;
+        } else {
+          this.last = null;
+        }
+        this.size--;
+        return element;
+      },
+
+      isEmpty: function () {
+        return this.size === 0;
+      },
+
+      clear: function () {
+        this.first = null;
+        this.last = null;
+        this.size = 0;
+      }
+    }
+
+    const queueElement = document.getElementById('queue');
+    const elementInput = document.getElementById('element');
+    const addButton = document.getElementById('add');
+    const removeButton = document.getElementById('remove');
+    const clearButton = document.getElementById('clear');
+
+    function renderQueue() {
+      queueElement.innerHTML = '';
+      let current = queue.first;
+      while (current) {
+        const li = document.createElement('li');
+        li.className = 'list-group-item';
+        if (!current.next) {
+          li.classList.add('last-element');
+        }
+        if (!current.previous) {
+          li.classList.add('first-element');
+        }
+        li.textContent = current.element;
+        queueElement.appendChild(li);
+        current = current.next;
+      }
+
+      const sizeElement = document.getElementById('size');
+      sizeElement.textContent = `${queue.size}`;
+
+      const emptyElement = document.getElementById('empty');
+      emptyElement.textContent = `${queue.isEmpty() ? 'SIM' : 'NÃO'}`;
+
+      const firstElement = document.getElementById('first');
+      firstElement.textContent = `${queue.first ? queue.first.element : '--'}`;
+
+      const lastElement = document.getElementById('last');
+      lastElement.textContent = `${queue.last ? queue.last.element : '--'}`;
+    }
+
+    elementInput.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        addButton.click();
+      }
+    });
+
+    addButton.addEventListener('click', function () {
+      const input = elementInput.value;
+      const elements = input.split(',').map(e => e.trim());
+      elements.forEach(element => {
+        queue.add(element);
+      });
+      elementInput.value = '';
+      renderQueue();
+    });
+
+    removeButton.addEventListener('click', function () {
+      const element = queue.remove();
+      renderQueue();
+      setTimeout(() => {
+        if (element) {
+          alert(`Elemento removido: ${element}`);
+        } else {
+          alert('A fila está vazia');
+        }
+      }, 10);
+    });
+
+    clearButton.addEventListener('click', function () {
+      queue.clear();
+      renderQueue();
+    });
+
+    renderQueue();
+  </script>
+</body>
+
+</html>
