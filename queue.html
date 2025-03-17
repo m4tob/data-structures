@@ -73,6 +73,8 @@
     </div>
   </div>
 
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
   <script>
     const queue = {
       first: null,
@@ -181,9 +183,15 @@
       renderQueue();
       setTimeout(() => {
         if (element) {
-          alert(`Elemento removido: ${element}`);
+          swal({
+            text: `Elemento removido: ${element}`,
+            icon: "success",
+          });
         } else {
-          alert('A fila está vazia');
+          swal({
+            text: 'A fila está vazia!',
+            icon: "warning",
+          });
         }
       }, 10);
     });

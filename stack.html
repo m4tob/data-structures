@@ -56,6 +56,8 @@
     </div>
   </div>
 
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
   <script>
     const stack = {
       head: null,
@@ -141,9 +143,15 @@
       renderStack();
       setTimeout(() => {
         if (element) {
-          alert(`Elemento removido: ${element}`);
+          swal({
+            text: `Elemento removido: ${element}`,
+            icon: "success",
+          });
         } else {
-          alert('A pilha está vazia');
+          swal({
+            text: 'A pilha está vazia!',
+            icon: "warning",
+          });
         }
       }, 10);
     });
